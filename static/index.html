@@ -3,76 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Web App Generator</title>
+    <title>AI Web App Generator | OpenAI Powered</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Animated background -->
+    <div class="bg-animation">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
     <div class="container">
         <header>
-            <h1>🤖 AI Web App Generator</h1>
-            <p class="subtitle">Generate and deploy web applications using Gemini AI</p>
+            <div class="header-badge">✨ Powered by OpenAI</div>
+            <h1>
+                <span class="gradient-text">AI Web App Generator</span>
+            </h1>
+            <p class="subtitle">Transform ideas into deployed web applications in seconds</p>
+            <div class="header-stats">
+                <div class="stat">
+                    <span class="stat-number">⚡</span>
+                    <span class="stat-label">Instant Deploy</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">🚀</span>
+                    <span class="stat-label">GitHub Pages</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">🤖</span>
+                    <span class="stat-label">AI Powered</span>
+                </div>
+            </div>
         </header>
 
         <div class="form-container">
+            <div class="form-header">
+                <h2>🎨 Create Your Application</h2>
+                <p>Fill in the details below to generate and deploy your web app</p>
+            </div>
+            
             <form id="appForm">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">
+                            <span class="label-icon">📧</span>
+                            Email Address
+                        </label>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="secret">
+                            <span class="label-icon">🔐</span>
+                            Secret Key
+                        </label>
+                        <input type="password" id="secret" name="secret" placeholder="Enter your secret key" required>
+                        <small>Authentication secret for API access</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task">
+                            <span class="label-icon">📦</span>
+                            Task Name
+                        </label>
+                        <input type="text" id="task" name="task" placeholder="my-awesome-app" required>
+                        <small>GitHub repository name (lowercase, hyphens allowed)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="round">
+                            <span class="label-icon">🔄</span>
+                            Round
+                        </label>
+                        <select id="round" name="round" required>
+                            <option value="1">Round 1 - Initial Build</option>
+                            <option value="2">Round 2 - Revision/Update</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="secret">Secret Key</label>
-                    <input type="password" id="secret" name="secret" placeholder="Your secret key" required>
-                    <small>Authentication secret for API access</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="task">Task Name</label>
-                    <input type="text" id="task" name="task" placeholder="my-awesome-app" required>
-                    <small>GitHub repository name (lowercase, hyphens allowed)</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="round">Round</label>
-                    <select id="round" name="round" required>
-                        <option value="1">Round 1 - Initial Build</option>
-                        <option value="2">Round 2 - Revision/Update</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="nonce">Nonce</label>
+                    <label for="nonce">
+                        <span class="label-icon">🎲</span>
+                        Nonce
+                    </label>
                     <input type="text" id="nonce" name="nonce" placeholder="unique-identifier-123" required>
                     <small>Unique identifier for this request</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="brief">Application Brief</label>
-                    <textarea id="brief" name="brief" rows="4" placeholder="Describe the web application you want to create..." required></textarea>
-                    <small>Detailed description of the app you want Gemini to generate</small>
+                    <label for="brief">
+                        <span class="label-icon">💡</span>
+                        Application Brief
+                    </label>
+                    <textarea id="brief" name="brief" rows="5" placeholder="Describe the web application you want to create in detail..." required></textarea>
+                    <small>Detailed description of the app you want AI to generate</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checks">
+                            <span class="label-icon">✅</span>
+                            Checks (comma-separated)
+                        </label>
+                        <input type="text" id="checks" name="checks" placeholder="responsive, dark-mode, accessible">
+                        <small>Optional: Features to verify</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="evaluation_url">
+                            <span class="label-icon">🔔</span>
+                            Evaluation URL
+                        </label>
+                        <input type="url" id="evaluation_url" name="evaluation_url" placeholder="https://example.com/webhook" required>
+                        <small>Webhook URL for notifications</small>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="checks">Checks (comma-separated)</label>
-                    <input type="text" id="checks" name="checks" placeholder="responsive, dark-mode, accessible">
-                    <small>Optional: Features to verify (e.g., responsive, dark-mode)</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="evaluation_url">Evaluation URL</label>
-                    <input type="url" id="evaluation_url" name="evaluation_url" placeholder="https://example.com/webhook" required>
-                    <small>Webhook URL to receive deployment notifications</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="attachments">Attachments (one per line)</label>
+                    <label for="attachments">
+                        <span class="label-icon">📎</span>
+                        Attachments (one per line)
+                    </label>
                     <textarea id="attachments" name="attachments" rows="3" placeholder="Additional instructions or requirements..."></textarea>
                     <small>Optional: Additional context or requirements</small>
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
-                    <span class="btn-text">Generate & Deploy</span>
-                    <span class="btn-loader" style="display: none;">⏳ Processing...</span>
+                    <span class="btn-text">
+                        <span class="btn-icon">🚀</span>
+                        Generate & Deploy
+                    </span>
+                    <span class="btn-loader" style="display: none;">
+                        <span class="spinner"></span>
+                        Processing...
+                    </span>
                 </button>
             </form>
         </div>
@@ -83,32 +156,81 @@
         </div>
 
         <div class="info-section">
-            <h3>How It Works</h3>
-            <ol>
-                <li><strong>Round 1:</strong> Gemini AI generates a web app based on your brief</li>
-                <li><strong>Deployment:</strong> App is committed to a new GitHub repository</li>
-                <li><strong>GitHub Pages:</strong> Automatically enabled for instant hosting</li>
-                <li><strong>Round 2:</strong> Update an existing app with new features</li>
-            </ol>
-        </div>
-
-        <div class="examples-section">
-            <h3>Example Briefs</h3>
-            <div class="examples-grid">
-                <div class="example-card" onclick="fillExample('calculator')">
-                    <h4>🔢 Calculator</h4>
-                    <p>Create a beautiful calculator with basic arithmetic operations and modern design</p>
+            <h3>⚙️ How It Works</h3>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Generate with AI</h4>
+                        <p>OpenAI analyzes your brief and generates a complete web application</p>
+                    </div>
                 </div>
-                <div class="example-card" onclick="fillExample('todo')">
-                    <h4>✅ Todo List</h4>
-                    <p>Build a todo list app with localStorage, task categories, and dark mode</p>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Auto Deploy</h4>
+                        <p>App is automatically committed to a new GitHub repository</p>
+                    </div>
                 </div>
-                <div class="example-card" onclick="fillExample('portfolio')">
-                    <h4>💼 Portfolio</h4>
-                    <p>Design a personal portfolio website with projects, about section, and contact form</p>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Live Instantly</h4>
+                        <p>GitHub Pages is enabled for instant hosting and access</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Iterate & Improve</h4>
+                        <p>Use Round 2 to update and enhance your application</p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="examples-section">
+            <h3>💡 Example Projects</h3>
+            <p class="section-description">Click on any example to quick-fill the form</p>
+            <div class="examples-grid">
+                <div class="example-card" onclick="fillExample('calculator')">
+                    <div class="example-icon">🔢</div>
+                    <h4>Calculator App</h4>
+                    <p>Beautiful calculator with basic arithmetic operations and modern design</p>
+                    <div class="example-tags">
+                        <span class="tag">Responsive</span>
+                        <span class="tag">Keyboard</span>
+                    </div>
+                </div>
+                <div class="example-card" onclick="fillExample('todo')">
+                    <div class="example-icon">✅</div>
+                    <h4>Todo List</h4>
+                    <p>Full-featured todo app with localStorage, categories, and dark mode</p>
+                    <div class="example-tags">
+                        <span class="tag">LocalStorage</span>
+                        <span class="tag">Dark Mode</span>
+                    </div>
+                </div>
+                <div class="example-card" onclick="fillExample('portfolio')">
+                    <div class="example-icon">💼</div>
+                    <h4>Portfolio Site</h4>
+                    <p>Personal portfolio with projects showcase, about section, and contact form</p>
+                    <div class="example-tags">
+                        <span class="tag">Smooth Scroll</span>
+                        <span class="tag">Contact Form</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Built with ❤️ using OpenAI & FastAPI</p>
+            <p class="footer-links">
+                <a href="https://github.com/iftikar0016/TDS-P1-OpenAi" target="_blank">GitHub</a>
+                <span>•</span>
+                <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">Back to Top ↑</a>
+            </p>
+        </footer>
     </div>
 
     <script src="/static/script.js"></script>

@@ -1,0 +1,17 @@
+{
+  "email": "test@example.com",
+  "secret": "amazing",
+  "task": "hello-world-app",
+  "round": 1,
+  "nonce": "test-round1-nonce-12345",
+  "brief": "Create a simple Hello World web application with a colorful gradient background, centered text saying 'Hello World!', and a button that shows the current time when clicked.",
+  "checks": [
+    "Repo has MIT license",
+    "README.md is professional and comprehensive",
+    "Page displays 'Hello World!' prominently",
+    "Page has a button to show current time",
+    "Page has attractive styling with gradient background"
+  ],
+  "evaluation_url": "https://httpbin.org/post",
+  "attachments": []
+}

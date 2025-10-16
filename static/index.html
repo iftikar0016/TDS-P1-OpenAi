@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Web App Generator</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI Web App Generator</h1>
+            <p class="subtitle">Generate and deploy web applications using Gemini AI</p>
+        </header>
+
+        <div class="form-container">
+            <form id="appForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="secret">Secret Key</label>
+                    <input type="password" id="secret" name="secret" placeholder="Your secret key" required>
+                    <small>Authentication secret for API access</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="task">Task Name</label>
+                    <input type="text" id="task" name="task" placeholder="my-awesome-app" required>
+                    <small>GitHub repository name (lowercase, hyphens allowed)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="round">Round</label>
+                    <select id="round" name="round" required>
+                        <option value="1">Round 1 - Initial Build</option>
+                        <option value="2">Round 2 - Revision/Update</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="nonce">Nonce</label>
+                    <input type="text" id="nonce" name="nonce" placeholder="unique-identifier-123" required>
+                    <small>Unique identifier for this request</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="brief">Application Brief</label>
+                    <textarea id="brief" name="brief" rows="4" placeholder="Describe the web application you want to create..." required></textarea>
+                    <small>Detailed description of the app you want Gemini to generate</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="checks">Checks (comma-separated)</label>
+                    <input type="text" id="checks" name="checks" placeholder="responsive, dark-mode, accessible">
+                    <small>Optional: Features to verify (e.g., responsive, dark-mode)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="evaluation_url">Evaluation URL</label>
+                    <input type="url" id="evaluation_url" name="evaluation_url" placeholder="https://example.com/webhook" required>
+                    <small>Webhook URL to receive deployment notifications</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="attachments">Attachments (one per line)</label>
+                    <textarea id="attachments" name="attachments" rows="3" placeholder="Additional instructions or requirements..."></textarea>
+                    <small>Optional: Additional context or requirements</small>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Generate & Deploy</span>
+                    <span class="btn-loader" style="display: none;">⏳ Processing...</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="response-container" id="responseContainer" style="display: none;">
+            <h3>Response</h3>
+            <div class="response-content" id="responseContent"></div>
+        </div>
+
+        <div class="info-section">
+            <h3>How It Works</h3>
+            <ol>
+                <li><strong>Round 1:</strong> Gemini AI generates a web app based on your brief</li>
+                <li><strong>Deployment:</strong> App is committed to a new GitHub repository</li>
+                <li><strong>GitHub Pages:</strong> Automatically enabled for instant hosting</li>
+                <li><strong>Round 2:</strong> Update an existing app with new features</li>
+            </ol>
+        </div>
+
+        <div class="examples-section">
+            <h3>Example Briefs</h3>
+            <div class="examples-grid">
+                <div class="example-card" onclick="fillExample('calculator')">
+                    <h4>🔢 Calculator</h4>
+                    <p>Create a beautiful calculator with basic arithmetic operations and modern design</p>
+                </div>
+                <div class="example-card" onclick="fillExample('todo')">
+                    <h4>✅ Todo List</h4>
+                    <p>Build a todo list app with localStorage, task categories, and dark mode</p>
+                </div>
+                <div class="example-card" onclick="fillExample('portfolio')">
+                    <h4>💼 Portfolio</h4>
+                    <p>Design a personal portfolio website with projects, about section, and contact form</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

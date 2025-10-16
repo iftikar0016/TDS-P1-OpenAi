@@ -1,0 +1,25 @@
+{
+  "email": "test@example.com",
+  "secret": "amazing",
+  "task": "image-test-app",
+  "round": 1,
+  "nonce": "base64-test-nonce-123",
+  "brief": "Create a web application that displays the attached image. The image is provided as a base64-encoded data URI.",
+  "checks": [
+    "Repo has MIT license",
+    "README.md is professional",
+    "Page displays the provided image",
+    "Image is properly decoded from base64"
+  ],
+  "evaluation_url": "https://httpbin.org/post",
+  "attachments": [
+    {
+      "name": "sample.png",
+      "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    },
+    {
+      "name": "logo.svg",
+      "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iYmx1ZSIvPjwvc3ZnPg=="
+    }
+  ]
+}

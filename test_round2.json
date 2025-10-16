@@ -1,0 +1,17 @@
+{
+  "email": "test@example.com",
+  "secret": "amazing",
+  "task": "hello-world-app",
+  "round": 2,
+  "nonce": "test-round2-nonce-67890",
+  "brief": "Update the Hello World application to add an animated rainbow effect to the text, add a counter that shows how many times the time button has been clicked, and include a dark mode toggle button.",
+  "checks": [
+    "Text has rainbow animation effect",
+    "Counter displays number of button clicks",
+    "Dark mode toggle is functional",
+    "All previous functionality still works",
+    "Smooth transitions between light and dark mode"
+  ],
+  "evaluation_url": "https://httpbin.org/post",
+  "attachments": []
+}

@@ -43,34 +43,110 @@ client = openai.OpenAI(api_key=settings.AIPIPE_TOKEN, base_url=settings.OPENAI_B
 github_client = Github(settings.GITHUB_TOKEN)
 
 
-def generate_html_with_gemini(brief: str, attachments: list = None, existing_code: str = None) -> str:
-    """Generate or revise HTML application using Gemini API."""
+def _strip_code_block(text: str) -> str:
+    """
+    If text is inside triple-backticks, return inner contents. Otherwise return text as-is.
+    """
+    if "```" in text:
+        parts = text.split("```")
+        if len(parts) >= 2:
+            # Handle language tags like ```html or ```markdown
+            inner = parts[1].strip()
+            # Remove language tag if present at start
+            if '\n' in inner:
+                lines = inner.split('\n', 1)
+                if lines[0].strip() in ['html', 'markdown', 'md']:
+                    return lines[1].strip() if len(lines) > 1 else inner
+            return inner
+    return text.strip()
+
+
+def generate_html_with_gemini(brief: str, attachments: list = None, existing_code: str = None) -> dict:
+    """Generate or revise HTML application and README using OpenAI API in one call."""
+    
+    # Prepare attachment info if present
+    attachments_info = ""
+    if attachments:
+        attachments_info = "\n\nAttachments:\n" + "\n".join([f"- {att.name}: {att.url}" for att in attachments])
     
     if existing_code:
         # Round 2: Revision prompt
-        prompt = f"""Given the current code below, update the application to satisfy this new requirement: {brief}
+        prompt = f"""You are a professional web developer assistant.
 
-Current code:
+### Task: Round 2 - Code Revision
+Update the existing application to satisfy this new requirement: {brief}
+
+### Current Code:
 {existing_code}
 
-Please provide the complete updated HTML file with all HTML, CSS, and JavaScript in a single file. The application should be fully functional and self-contained."""
+{attachments_info}
+
+### Output Format (CRITICAL):
+You must output TWO parts separated by exactly this line: ---README.md---
+
+1. First part: Complete updated HTML file (index.html) with all HTML, CSS, and JavaScript
+2. Separator: ---README.md---
+3. Second part: Updated README.md that describes the NEW features and changes made in Round 2
+
+The README must include:
+- Project title
+- Summary of what the app does (based on actual code)
+- Key features (list what's actually implemented)
+- Setup instructions
+- Usage instructions
+- Technical details (HTML/CSS/JS structure)
+- Changes made in Round 2
+- Deployment info (GitHub Pages)
+- License (MIT)
+
+Output format:
+<your complete HTML code here>
+
+---README.md---
+<your complete README.md here>
+"""
     else:
         # Round 1: Initial generation prompt
-        prompt = f"""Create a fully functional single-file HTML web application based on the following brief:
+        prompt = f"""You are a professional web developer assistant.
+
+### Task: Round 1 - New Application
+Create a fully functional single-file HTML web application based on this brief:
 
 {brief}
 
-Requirements:
+{attachments_info}
+
+### Requirements:
 - Create a complete, self-contained HTML file (index.html)
 - Include all HTML, CSS (in <style> tags), and JavaScript (in <script> tags) in one file
 - The application should be fully functional and ready to deploy
 - Use modern web standards and best practices
 - Make it visually appealing and user-friendly
+
+### Output Format (CRITICAL):
+You must output TWO parts separated by exactly this line: ---README.md---
+
+1. First part: Complete HTML file (index.html)
+2. Separator: ---README.md---
+3. Second part: Professional README.md
+
+The README must include:
+- Project title
+- Summary of what the app does (based on actual code you wrote)
+- Key features (list what you actually implemented)
+- Setup instructions
+- Usage instructions
+- Technical details (HTML/CSS/JS structure)
+- Deployment info (GitHub Pages)
+- License (MIT)
+- Generated date: {datetime.now().strftime('%Y-%m-%d')}
+
+Output format:
+<your complete HTML code here>
+
+---README.md---
+<your complete README.md here>
 """
-        
-        if attachments:
-            attachment_info = "\n".join([f"- {att.name}: {att.url}" for att in attachments])
-            prompt += f"\n\nAdditional context/attachments:\n{attachment_info}"
     
     try:
         # Send prompt via AI Pipe proxy using new OpenAI client
@@ -79,56 +155,40 @@ Requirements:
             input=prompt
         )
         # Extract the text content from the Response object
-        html_content = resp.output_text
+        full_response = resp.output_text
         
-        # Clean up markdown code blocks if present
-        if "```html" in html_content:
-            html_content = html_content.split("```html")[1].split("```")[0].strip()
-        elif "```" in html_content:
-            html_content = html_content.split("```")[1].split("```")[0].strip()
-        
-        return html_content
-    except Exception as e:
-        raise Exception(f"OpenAI API error: {str(e)}")
-
-
-def create_readme_content(task: str, brief: str, round_num: int = 1) -> str:
-    """Generate comprehensive README content."""
-    
-    readme = f"""# {task}
+        # Split into HTML and README parts
+        if "---README.md---" in full_response:
+            html_part, readme_part = full_response.split("---README.md---", 1)
+            html_content = _strip_code_block(html_part)
+            readme_content = _strip_code_block(readme_part)
+            print(f"✓ Successfully split response into HTML ({len(html_content)} chars) and README ({len(readme_content)} chars)")
+        else:
+            # Fallback: try to extract HTML and generate simple README
+            print("⚠ Warning: Response did not contain ---README.md--- separator, using fallback")
+            html_content = _strip_code_block(full_response)
+            readme_content = f"""# Application
 
 ## Summary
-This web application was generated to fulfill the following requirement:
-
 {brief}
 
 ## Setup
-This is a static web application that requires no installation. Simply open `index.html` in a web browser.
-
-## Usage
-1. Clone this repository
-2. Open `index.html` in your web browser
-3. The application is ready to use
-
-## Code Explanation
-This application is built as a single-file HTML application containing:
-- **HTML Structure**: The core markup and content
-- **CSS Styling**: Embedded styles for visual presentation
-- **JavaScript Logic**: Client-side functionality and interactivity
-
-All components are contained within the `index.html` file for easy deployment and portability.
-
-## Deployment
-This application is deployed via GitHub Pages and is accessible at the Pages URL provided in the repository settings.
+Open `index.html` in a web browser.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License
 
 ---
-*Generated on {datetime.now().strftime('%Y-%m-%d')} - Round {round_num}*
+*Generated on {datetime.now().strftime('%Y-%m-%d')}*
 """
-    
-    return readme
+        
+        return {
+            "html": html_content,
+            "readme": readme_content
+        }
+        
+    except Exception as e:
+        raise Exception(f"OpenAI API error: {str(e)}")
 
 
 def create_mit_license(github_username: str) -> str:
@@ -215,10 +275,13 @@ async def process_task_round_1(request: TaskRequest):
     print(f"{'='*60}\n")
     
     try:
-        # Step 1: Generate HTML with Gemini
-        print("→ Generating HTML application with Gemini API...")
-        html_content = generate_html_with_gemini(request.brief, request.attachments)
+        # Step 1: Generate HTML and README with OpenAI
+        print("→ Generating HTML application and README with OpenAI API...")
+        result = generate_html_with_gemini(request.brief, request.attachments)
+        html_content = result["html"]
+        readme_content = result["readme"]
         print(f"✓ Generated {len(html_content)} characters of HTML")
+        print(f"✓ Generated {len(readme_content)} characters of README")
         
         # Step 2: Create GitHub repository
         print(f"\n→ Creating GitHub repository: {request.task}")
@@ -283,8 +346,7 @@ async def process_task_round_1(request: TaskRequest):
             )
             print("✓ Committed LICENSE")
         
-        # Commit README.md
-        readme_content = create_readme_content(request.task, request.brief, round_num=1)
+        # Commit README.md (already generated above)
         try:
             readme_file = repo.get_contents("README.md", ref="main")
             readme_commit = repo.update_file(
@@ -378,14 +440,17 @@ async def process_task_round_2(request: TaskRequest):
         existing_html = index_file.decoded_content.decode('utf-8')
         print(f"✓ Retrieved {len(existing_html)} characters")
         
-        # Step 2: Generate updated HTML with Gemini
-        print("\n→ Generating updated HTML with Gemini API...")
-        updated_html = generate_html_with_gemini(
+        # Step 2: Generate updated HTML and README with OpenAI
+        print("\n→ Generating updated HTML and README with OpenAI API...")
+        result = generate_html_with_gemini(
             request.brief,
             request.attachments,
             existing_code=existing_html
         )
+        updated_html = result["html"]
+        readme_content = result["readme"]
         print(f"✓ Generated {len(updated_html)} characters of updated HTML")
+        print(f"✓ Generated {len(readme_content)} characters of updated README")
         
         # Step 3: Update files in repository
         print("\n→ Updating files in repository...")
@@ -400,8 +465,7 @@ async def process_task_round_2(request: TaskRequest):
         )
         print("✓ Updated index.html")
         
-        # Update README.md
-        readme_content = create_readme_content(request.task, request.brief, round_num=2)
+        # Update README.md (already generated above)
         readme_file = repo.get_contents("README.md", ref="main")
         readme_commit = repo.update_file(
             path="README.md",

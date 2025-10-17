@@ -92,7 +92,7 @@ document.getElementById('appForm').addEventListener('submit', async (e) => {
                             <strong>📧 Notification:</strong> Check your evaluation URL for deployment details.
                         </p>
                         <p style="color: var(--text-muted); font-size: 0.95rem;">
-                            <strong>🌐 Live URL:</strong> <code style="background: rgba(99, 102, 241, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.85rem;">https://[username].github.io/${data.task}/</code>
+                            <strong>🌐 Live URL:</strong> <code style="background: rgba(99, 102, 241, 0.2); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.85rem;">https://AlamIftikar.github.io/${data.task}/</code>
                         </p>
                     </div>
                 </div>

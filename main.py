@@ -61,7 +61,7 @@ def _strip_code_block(text: str) -> str:
     return text.strip()
 
 
-def generate_html_with_gemini(brief: str, attachments: list = None, existing_code: str = None) -> dict:
+def generate_html_with_llm(brief: str, attachments: list = None, existing_code: str = None) -> dict:
     """Generate or revise HTML application and README using OpenAI API in one call."""
     
     # Prepare attachment info if present
@@ -277,7 +277,7 @@ async def process_task_round_1(request: TaskRequest):
     try:
         # Step 1: Generate HTML and README with OpenAI
         print("→ Generating HTML application and README with OpenAI API...")
-        result = generate_html_with_gemini(request.brief, request.attachments)
+        result = generate_html_with_llm(request.brief, request.attachments)
         html_content = result["html"]
         readme_content = result["readme"]
         print(f"✓ Generated {len(html_content)} characters of HTML")
@@ -442,7 +442,7 @@ async def process_task_round_2(request: TaskRequest):
         
         # Step 2: Generate updated HTML and README with OpenAI
         print("\n→ Generating updated HTML and README with OpenAI API...")
-        result = generate_html_with_gemini(
+        result = generate_html_with_llm(
             request.brief,
             request.attachments,
             existing_code=existing_html

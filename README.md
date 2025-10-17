@@ -1,14 +1,14 @@
 # 🚀 Web App Generator API
 
-A FastAPI-based service that automatically generates web applications using Google's Gemini AI, deploys them to GitHub, and publishes them via GitHub Pages. Built for the TDS (Tools in Data Science) project.
+A FastAPI-based service that automatically generates web applications using OpenAI's API, deploys them to GitHub, and publishes them via GitHub Pages. Built for the TDS (Tools in Data Science) project.
 
 ## 📋 Overview
 
-This API receives requests with application specifications, uses Gemini AI to generate complete single-file HTML applications, creates GitHub repositories, and deploys them live via GitHub Pages. It supports both initial builds and iterative revisions.
+This API receives requests with application specifications, uses OpenAI's API to generate complete single-file HTML applications, creates GitHub repositories, and deploys them live via GitHub Pages. It supports both initial builds and iterative revisions.
 
 ### Key Features
 
-- 🤖 **AI-Powered Generation**: Uses Gemini 2.0 Flash to generate complete web applications
+- 🤖 **AI-Powered Generation**: Uses OpenAI's GPT-based models to generate complete web applications
 - 🔄 **Two-Round System**: Initial build (Round 1) and revision (Round 2) support
 - 📦 **Automatic Deployment**: Creates repos, commits code, enables GitHub Pages
 - 🔔 **Callback Notifications**: Notifies evaluation server with deployment details
@@ -18,7 +18,7 @@ This API receives requests with application specifications, uses Gemini AI to ge
 ## 🛠️ Tech Stack
 
 - **Framework**: FastAPI + Uvicorn
-- **AI Model**: Google Gemini 2.0 Flash (via `google-generativeai`)
+- **AI Model**: OpenAI GPT-based models (via `openai` library)
 - **GitHub Integration**: PyGithub
 - **HTTP Client**: httpx (for async callbacks)
 - **Validation**: Pydantic v2
@@ -29,14 +29,14 @@ This API receives requests with application specifications, uses Gemini AI to ge
 
 - Python 3.12+
 - GitHub Personal Access Token (with `repo` scope)
-- Google Gemini API Key
+- OpenAI API Key
 
 ### Setup
 
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd tds-p1-gemini
+   cd tds-p1-openai
    ```
 
 2. **Create virtual environment**
@@ -62,7 +62,7 @@ This API receives requests with application specifications, uses Gemini AI to ge
    MY_SECRET=your-api-secret
    GITHUB_TOKEN=ghp_your_github_token
    GITHUB_USERNAME=your-github-username
-   GEMINI_API_KEY=your-gemini-api-key
+   AIPIPE_TOKEN=your-openai-api-key
    ```
 
 5. **Run the server**
@@ -148,7 +148,7 @@ Serves the web UI (static files from `/static`).
 ### Round 1: Initial Build
 
 1. **Receive Request**: Validates secret and request format
-2. **Generate HTML**: Calls Gemini API with brief and attachments
+2. **Generate HTML**: Calls OpenAI API with brief and attachments
 3. **Create Repository**: Creates public GitHub repo
 4. **Commit Files**: 
    - `index.html` (generated app)
@@ -161,96 +161,11 @@ Serves the web UI (static files from `/static`).
 
 1. **Receive Request**: Validates secret and request format
 2. **Fetch Existing Code**: Retrieves current `index.html` from repo
-3. **Generate Update**: Calls Gemini API with existing code + new requirements
+3. **Generate Update**: Calls OpenAI API with existing code + new requirements
 4. **Update Files**:
    - `index.html` (updated app)
    - `README.md` (updated for Round 2)
 5. **Send Callback**: Notifies evaluation server with new commit SHA
-
-## 🧪 Testing
-
-### Quick Test
-
-```bash
-# Start server
-uvicorn main:app --reload
-
-# In another terminal, run test script
-./test_api.sh
-```
-
-### Manual Testing
-
-**Round 1:**
-```bash
-curl -X POST http://localhost:8000/api-endpoint \
-  -H "Content-Type: application/json" \
-  -d @test_round1.json
-```
-
-**Round 2:**
-```bash
-curl -X POST http://localhost:8000/api-endpoint \
-  -H "Content-Type: application/json" \
-  -d @test_round2.json
-```
-
-### Test Files Included
-
-- `test_round1.json` - Example Round 1 request (Hello World app)
-- `test_round2.json` - Example Round 2 request (adds features)
-- `test_api.sh` - Automated test script
-
-## 📚 Documentation
-
-### Technical Docs
-
-- **[NONCE_HANDLING.md](./NONCE_HANDLING.md)** - Detailed explanation of nonce/correlation ID handling
-
-### Request Fields
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `email` | string | ✅ | Student/user email |
-| `secret` | string | ✅ | API authentication secret |
-| `task` | string | ✅ | Unique task/repo name |
-| `round` | int | ✅ | Round number (1 or 2) |
-| `nonce` | string | ✅ | Correlation ID for callbacks |
-| `brief` | string | ✅ | Application requirements |
-| `checks` | string[] | ✅ | Evaluation criteria |
-| `evaluation_url` | string | ✅ | Callback URL for results |
-| `attachments` | object[] | ❌ | Optional files (name + data URI) |
-
-### Evaluation Response Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `email` | string | User email (from request) |
-| `task` | string | Task name (from request) |
-| `round` | int | Round number (from request) |
-| `nonce` | string | Correlation ID (from request) |
-| `repo_url` | string | GitHub repository URL |
-| `commit_sha` | string | Latest commit SHA |
-| `pages_url` | string | Live GitHub Pages URL |
-
-## 🔒 Security
-
-### Authentication
-
-- API uses secret-based authentication (`MY_SECRET` env variable)
-- All requests must include matching `secret` field
-- Returns `401 Unauthorized` for invalid secrets
-
-### Environment Variables
-
-Never commit `.env` file. Always use `.env.example` as template.
-
-### Nonce Handling
-
-- Nonce is a **pass-through correlation ID**
-- No validation or deduplication by this API
-- Evaluation server should implement nonce tracking
-- See [NONCE_HANDLING.md](./NONCE_HANDLING.md) for details
 
 ## 🔧 Configuration
 
@@ -261,19 +176,11 @@ Never commit `.env` file. Always use `.env.example` as template.
 MY_SECRET=your-api-secret                    # Request authentication
 GITHUB_TOKEN=ghp_xxxxx                       # GitHub PAT with repo scope
 GITHUB_USERNAME=your-username                # GitHub username
-GEMINI_API_KEY=AIzaSyxxxx                   # Gemini API key
+AIPIPE_TOKEN=sk-xxxxxx                       # OpenAI API key
 
 # Optional
 WEBHOOK_SECRET=default_webhook_secret        # Future webhook validation
-PORT=8000                                     # Server port (default: 8000)
-```
-
-### Gemini Model
-
-Currently uses `gemini-2.0-flash-exp`. To change model, edit `main.py`:
-
-```python
-model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Line 73
+PORT=8000                                    # Server port (default: 8000)
 ```
 
 ## �� Project Structure
